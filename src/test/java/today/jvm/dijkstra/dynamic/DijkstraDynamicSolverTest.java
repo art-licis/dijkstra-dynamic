@@ -37,10 +37,10 @@ public class DijkstraDynamicSolverTest {
 		// n1 -> n6
 		Path shortestPathN1N6 = solver.findShortestPath(n1, n6);
 		assertEquals(17, shortestPathN1N6.getDistance());
-		assertEquals(n1, shortestPathN1N6.getNodes().get(0));
-		assertEquals(n4, shortestPathN1N6.getNodes().get(1));
-		assertEquals(n5, shortestPathN1N6.getNodes().get(2));
-		assertEquals(n6, shortestPathN1N6.getNodes().get(3));
+		assertEquals(n1, shortestPathN1N6.getPathElements().get(0));
+		assertEquals(n4, shortestPathN1N6.getPathElements().get(1));
+		assertEquals(n5, shortestPathN1N6.getPathElements().get(2));
+		assertEquals(n6, shortestPathN1N6.getPathElements().get(3));
 
 		solver.printMinDistances();
 	}

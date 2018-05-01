@@ -8,10 +8,11 @@ import java.util.List;
  * @author Arturs Licis
  *
  */
-public class Path {
+public class Path implements PathElement {
 	private int distance;
-	private List<Node> nodes;
+	private List<PathElement> pathElements;
 
+	@Override
 	public int getDistance() {
 		return distance;
 	}
@@ -20,11 +21,11 @@ public class Path {
 		this.distance = distance;
 	}
 
-	public List<Node> getNodes() {
-		return nodes;
+	public List<PathElement> getPathElements() {
+		return pathElements;
 	}
 
-	public void setNodes(List<Node> nodes) {
-		this.nodes = nodes;
+	public void setNodes(List<PathElement> pathElements) {
+		this.pathElements = pathElements;
 	}
 }

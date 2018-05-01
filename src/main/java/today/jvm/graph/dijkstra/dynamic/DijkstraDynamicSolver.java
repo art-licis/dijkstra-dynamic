@@ -2,10 +2,7 @@ package today.jvm.graph.dijkstra.dynamic;
 
 import java.util.*;
 
-import today.jvm.graph.core.Edge;
-import today.jvm.graph.core.Graph;
-import today.jvm.graph.core.Node;
-import today.jvm.graph.core.Path;
+import today.jvm.graph.core.*;
 
 /**
  * Shortest path solver, using Dijkstra + dynamic programming to reuse previously
@@ -44,7 +41,7 @@ public class DijkstraDynamicSolver {
 			Node node = priorityQueue.poll();
 			// TODO: this might be redundant
 			if (node != source) {
-				minDistance[source.getSeq()][target.getSeq()] = node.getDistance();
+				minDistance[source.getSeq()][node.getSeq()] = node.getDistance();
 			}
 			if (node == target) {
 				break;
@@ -57,6 +54,8 @@ public class DijkstraDynamicSolver {
 				Node nextNode = edge.getTarget();
 				int newDist = node.getDistance() + edge.getWeight();
 				if (newDist < nextNode.getDistance()) {
+					// new distance to 'nextNode' is less than currently found:
+					// update distance, 'previous' reference and 'nextNode' in queue
 					nextNode.setDistance(newDist);
 					nextNode.setPrevious(node);
 					priorityQueue.remove(nextNode);
@@ -82,7 +81,7 @@ public class DijkstraDynamicSolver {
 	protected Path buildPath(Node targetNode) {
 		Path path = new Path();
 		path.setDistance(targetNode.getDistance());
-		Deque<Node> nodes = new LinkedList<>();
+		Deque<PathElement> nodes = new LinkedList<>();
 		do {
 			nodes.addFirst(targetNode);
 			targetNode = targetNode.getPrevious();

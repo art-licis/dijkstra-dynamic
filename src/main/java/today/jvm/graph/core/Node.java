@@ -10,7 +10,7 @@ import java.util.List;
  * @author Arturs Licis
  *
  */
-public class Node {
+public class Node implements PathElement {
 	private String name;
 	private List<Edge> edges = new LinkedList<Edge>();
 
@@ -49,6 +49,7 @@ public class Node {
 		this.seq = seq;
 	}
 
+	@Override
 	public int getDistance() {
 		return distance;
 	}

@@ -14,6 +14,7 @@ public class Graph {
 	private String name;
 	private List<Node> nodes = new ArrayList<>();
 	private List<Edge> edges = new ArrayList<>();
+	private transient Node[] nodeRefs;
 
 	public Graph(String name) {
 		this.name = name;
@@ -35,6 +36,13 @@ public class Graph {
 
 	public List<Node> getNodes() {
 		return nodes;
+	}
+
+	public Node getNode(int seq) {
+		if (nodeRefs == null) throw new RuntimeException("Node refs have not been initialized");
+		if (seq > getNodeCount()) throw new IndexOutOfBoundsException("Node index out of bounds: " + seq);
+
+		return nodeRefs[seq];
 	}
 
 	public int getNodeCount() {
@@ -69,6 +77,15 @@ public class Graph {
 
 	public List<Edge> getEdges() {
 		return edges;
+	}
+
+	public void buildNodeRefs() {
+		nodeRefs = new Node[getNodeCount()];
+		int seq = 0;
+		for (Node node : getNodes()) {
+			nodeRefs[seq] = node;
+			node.setSeq(seq++);
+		}
 	}
 
 	@Override

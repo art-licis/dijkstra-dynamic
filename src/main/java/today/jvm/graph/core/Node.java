@@ -14,6 +14,10 @@ public class Node {
 	private String name;
 	private List<Edge> edges = new LinkedList<Edge>();
 
+	private transient int seq;
+	private transient int distance;
+	private transient Node previous;
+
 	public Node() {
 	}
 
@@ -37,10 +41,34 @@ public class Node {
 		return edges;
 	}
 
+	public int getSeq() {
+		return seq;
+	}
+
+	public void setSeq(int seq) {
+		this.seq = seq;
+	}
+
+	public int getDistance() {
+		return distance;
+	}
+
+	public void setDistance(int distance) {
+		this.distance = distance;
+	}
+
+	public Node getPrevious() {
+		return previous;
+	}
+
+	public void setPrevious(Node previous) {
+		this.previous = previous;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder str = new StringBuilder("Node[");
-		str.append(name).append("|");
+		str.append(name).append("|").append(distance);
 		getEdges().forEach(e -> str.append(" ->").append(e.getTarget().getName()));
 		str.append("]");
 		return str.toString();

@@ -1,6 +1,8 @@
 package today.jvm.graph.core;
 
 /**
+ * Path fragment within a path, represented by source & target nodes.
+ *
  * @author Arturs Licis
  */
 public class PathFragment implements PathElement {
@@ -12,6 +14,14 @@ public class PathFragment implements PathElement {
 		this.source = source;
 		this.target = target;
 		this.distance = distance;
+	}
+
+	public Node getSource() {
+		return source;
+	}
+
+	public Node getTarget() {
+		return target;
 	}
 
 	@Override

@@ -33,22 +33,27 @@ public class DijkstraDynamicSolver {
 	public Path findShortestPath(Node source, Node target) {
 		PriorityQueue<Node> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(Node::getDistance).thenComparingInt(Node::getSeq));
 
-		graph.getNodes().forEach(n -> n.setDistance(Integer.MAX_VALUE));
+		graph.getNodes().forEach(n -> { n.setDistance(Integer.MAX_VALUE); n.setPrevious(null); });
 		source.setDistance(0);
 
 		priorityQueue.add(source);
+
+		PathElement finalElement = null;
 		while (!priorityQueue.isEmpty()) {
 			Node node = priorityQueue.poll();
-			// TODO: this might be redundant
+
 			if (node != source) {
 				minDistance[source.getSeq()][node.getSeq()] = node.getDistance();
 			}
 			if (node == target) {
+				finalElement = node;
 				break;
 			}
+
 			if (minDistance[node.getSeq()][target.getSeq()] != 0) {
-				System.out.printf("Cache hit between nodes %s and %s; distance: %d\n", source, target, minDistance[source.getSeq()][target.getSeq()]);
-				// TODO: cache hit; re-use cached min path?
+				// 'cache' hit between current node & target
+				finalElement = new PathFragment(node, target, minDistance[node.getSeq()][target.getSeq()]);
+				break;
 			}
 			for (Edge edge : node.getEdges()) {
 				Node nextNode = edge.getTarget();
@@ -58,19 +63,28 @@ public class DijkstraDynamicSolver {
 					// update distance, 'previous' reference and 'nextNode' in queue
 					nextNode.setDistance(newDist);
 					nextNode.setPrevious(node);
+
+					// TODO: remove is O(n), think of a better way
 					priorityQueue.remove(nextNode);
 					priorityQueue.add(nextNode);
 				}
 			}
 		}
 
-		buildMinDistance(source, target);
+		Path path = null;
+		if (finalElement instanceof Node) {
+			updateMinDistance(source, target);
+			path = buildPath(target);
+		} else if (finalElement instanceof PathFragment){
+			updateMinDistance(source, ((PathFragment) finalElement).getSource());
+			path = buildPath(((PathFragment) finalElement).getSource());
+			path.getPathElements().add(finalElement);
+		}
 
-		Path p = buildPath(target);
-		return p;
+		return path;
 	}
 
-	protected void buildMinDistance(Node sourceNode, Node targetNode) {
+	protected void updateMinDistance(Node sourceNode, Node targetNode) {
 		// TODO: intermediate results
 		do {
 			minDistance[sourceNode.getSeq()][targetNode.getSeq()] = targetNode.getDistance();

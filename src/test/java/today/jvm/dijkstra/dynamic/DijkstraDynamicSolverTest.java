@@ -42,6 +42,9 @@ public class DijkstraDynamicSolverTest {
 		assertEquals(n5, shortestPathN1N6.getPathElements().get(2));
 		assertEquals(n6, shortestPathN1N6.getPathElements().get(3));
 
+		Path shortestPathN4N6 = solver.findShortestPath(n4, n6);
+		System.out.println(shortestPathN4N6);
+
 		solver.printMinDistances();
 	}
 }

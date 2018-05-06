@@ -28,4 +28,9 @@ public class PathFragment implements PathElement {
 	public int getDistance() {
 		return distance;
 	}
+
+	@Override
+	public String toString() {
+		return new StringBuilder("PathFragment: [").append(source).append(" ... ").append(target).append("]").toString();
+	}
 }

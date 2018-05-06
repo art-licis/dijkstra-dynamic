@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import today.jvm.graph.core.Graph;
 import today.jvm.graph.core.Node;
 import today.jvm.graph.core.Path;
+import today.jvm.graph.core.PathFragment;
 import today.jvm.graph.dijkstra.dynamic.DijkstraDynamicSolver;
 
 /**
@@ -42,10 +43,9 @@ public class DijkstraDynamicSolverTest {
 		assertEquals(n5, shortestPathN1N6.getPathElements().get(2));
 		assertEquals(n6, shortestPathN1N6.getPathElements().get(3));
 
-		Path shortestPathN4N6 = solver.findShortestPath(n4, n6);
-		System.out.println(shortestPathN4N6);
-
-		solver.printMinDistances();
+		Path shortestPathN1N5 = solver.findShortestPath(n1, n5);
+		assertEquals(n1, shortestPathN1N5.getPathElements().get(0));
+		assertEquals(true, shortestPathN1N5.getPathElements().get(1) instanceof PathFragment);
 	}
 }
 

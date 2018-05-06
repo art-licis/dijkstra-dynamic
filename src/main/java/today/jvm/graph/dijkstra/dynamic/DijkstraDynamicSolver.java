@@ -15,8 +15,7 @@ import today.jvm.graph.core.*;
  * where n - node), and re-use it as a cache when searching for a new path. It can also be reused
  * from the mid-point in a new path.
  * <p>
- *
- * TODO: ensuring graph immutability once it has been submitted to solver.
+ * NB: This solver version works with only non-negative edge lengths.
  *
  * @author Arturs Licis
  */
@@ -26,16 +25,29 @@ public class DijkstraDynamicSolver {
 
 	public DijkstraDynamicSolver(Graph graph) {
 		this.graph = graph;
-		graph.buildNodeRefs();
-		minDistance = new int[graph.getNodeCount()][graph.getNodeCount()];
+		resetSolverCache();
 	}
 
+	/**
+	 * Finds shortest path between source and target node.
+	 *
+	 * @param source - source node in a path
+	 * @param target - target node in a path
+	 *
+	 * @return {@link Path} that may contain {@link PathFragment}.
+	 */
 	public Path findShortestPath(Node source, Node target) {
-		PriorityQueue<Node> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(Node::getDistance).thenComparingInt(Node::getSeq));
+		if (graph.isDirty()) {
+			resetSolverCache();
+		}
 
-		graph.getNodes().forEach(n -> { n.setDistance(Integer.MAX_VALUE); n.setPrevious(null); });
+		graph.getNodes().forEach(n -> {
+			n.setDistance(Integer.MAX_VALUE);
+			n.setPrevious(null);
+		});
 		source.setDistance(0);
 
+		PriorityQueue<Node> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(Node::getDistance).thenComparingInt(Node::getSeq));
 		priorityQueue.add(source);
 
 		PathElement finalElement = null;
@@ -51,7 +63,7 @@ public class DijkstraDynamicSolver {
 			}
 
 			if (minDistance[node.getSeq()][target.getSeq()] != 0) {
-				// 'cache' hit between current node & target
+				// 'cache hit' between current node & target
 				finalElement = new PathFragment(node, target, minDistance[node.getSeq()][target.getSeq()]);
 				break;
 			}
@@ -60,11 +72,10 @@ public class DijkstraDynamicSolver {
 				int newDist = node.getDistance() + edge.getWeight();
 				if (newDist < nextNode.getDistance()) {
 					// new distance to 'nextNode' is less than currently found:
-					// update distance, 'previous' reference and 'nextNode' in queue
+					// update distance, 'previous' reference and the 'nextNode' in queue
 					nextNode.setDistance(newDist);
 					nextNode.setPrevious(node);
 
-					// TODO: remove is O(n), think of a better way
 					priorityQueue.remove(nextNode);
 					priorityQueue.add(nextNode);
 				}
@@ -82,6 +93,22 @@ public class DijkstraDynamicSolver {
 		}
 
 		return path;
+	}
+
+	/**
+	 * Reset all cached results.
+	 */
+	public void resetSolverCache() {
+		graph.buildNodeRefs();
+		graph.resetDirty();
+		if (minDistance == null || minDistance.length != graph.getNodeCount()) {
+			minDistance = new int[graph.getNodeCount()][graph.getNodeCount()];
+		} else {
+			// avoid new memory allocation if the size is the same
+			for (int[] minDistanceLine : minDistance) {
+				Arrays.fill(minDistanceLine, 0);
+			}
+		}
 	}
 
 	protected void updateMinDistance(Node sourceNode, Node targetNode) {

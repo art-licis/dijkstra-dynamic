@@ -8,14 +8,12 @@ package today.jvm.graph.core;
 public class Edge {
 	private Node source;
 	private Node target;
-	private String name;
 	private int weight;
 
-	public Edge(Node source, Node target, String name, int weight) {
+	public Edge(Node source, Node target, int weight) {
 		super();
 		this.source = source;
 		this.target = target;
-		this.name = name;
 		this.weight = weight;
 	}
 
@@ -33,14 +31,6 @@ public class Edge {
 
 	public void setTarget(Node target) {
 		this.target = target;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public int getWeight() {

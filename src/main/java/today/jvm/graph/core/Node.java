@@ -14,7 +14,7 @@ public class Node implements PathElement {
 	private String name;
 	private List<Edge> edges = new LinkedList<Edge>();
 
-	private transient int seq;
+	private transient int seq = -1;
 	private transient int distance;
 	private transient Node previous;
 

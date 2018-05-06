@@ -28,4 +28,16 @@ public class Path implements PathElement {
 	public void setNodes(List<PathElement> pathElements) {
 		this.pathElements = pathElements;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder str = new StringBuilder("Path: [");
+		for (PathElement pathElement: pathElements) {
+			str.append(pathElement.toString()).append(", ");
+		}
+		str.setLength(str.length() - 2);
+		str.append("]");
+
+		return str.toString();
+	}
 }

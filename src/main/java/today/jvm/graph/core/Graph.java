@@ -75,7 +75,7 @@ public class Graph {
 	 * @param n2 - node 2
 	 * @param weight edge weight
 	 */
-	public void createUndirectedEdge(Node n1, Node n2, int weight) {
+	public void createBidirectionalEdge(Node n1, Node n2, int weight) {
 		{
 			Edge edge = new Edge(n1, n2, weight);
 			n1.addEdge(edge);

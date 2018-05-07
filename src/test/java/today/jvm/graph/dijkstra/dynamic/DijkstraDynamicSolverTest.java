@@ -21,14 +21,14 @@ public class DijkstraDynamicSolverTest {
 		Node n5 = g.addNode(new Node("5"));
 		Node n6 = g.addNode(new Node("6"));
 
-		g.createUndirectedEdge(n1, n2, 14);
-		g.createUndirectedEdge(n1, n3, 18);
-		g.createUndirectedEdge(n1, n4, 12);
-		g.createUndirectedEdge(n2, n3, 3);
-		g.createUndirectedEdge(n2, n6, 5);
-		g.createUndirectedEdge(n3, n5, 2);
-		g.createUndirectedEdge(n4, n5, 2);
-		g.createUndirectedEdge(n5, n6, 3);
+		g.createBidirectionalEdge(n1, n2, 14);
+		g.createBidirectionalEdge(n1, n3, 18);
+		g.createBidirectionalEdge(n1, n4, 12);
+		g.createBidirectionalEdge(n2, n3, 3);
+		g.createBidirectionalEdge(n2, n6, 5);
+		g.createBidirectionalEdge(n3, n5, 2);
+		g.createBidirectionalEdge(n4, n5, 2);
+		g.createBidirectionalEdge(n5, n6, 3);
 
 		DijkstraDynamicSolver solver = new DijkstraDynamicSolver(g);
 		// n1 -> n3

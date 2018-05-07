@@ -1,4 +1,4 @@
-package today.jvm.dijkstra.dynamic;
+package today.jvm.graph.dijkstra.dynamic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
@@ -6,7 +6,6 @@ import today.jvm.graph.core.Graph;
 import today.jvm.graph.core.Node;
 import today.jvm.graph.core.Path;
 import today.jvm.graph.core.PathFragment;
-import today.jvm.graph.dijkstra.dynamic.DijkstraDynamicSolver;
 
 /**
  * @author Arturs Licis

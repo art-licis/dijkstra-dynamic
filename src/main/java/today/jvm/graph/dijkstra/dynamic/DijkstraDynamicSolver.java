@@ -5,8 +5,8 @@ import java.util.*;
 import today.jvm.graph.core.*;
 
 /**
- * Shortest path solver, using Dijkstra + dynamic programming to reuse previously
- * discovered shortest paths.
+ * Dijkstra /Dynamic/: shortest path solver using Dijkstra + dynamic programming
+ * to reuse previously discovered shortest paths.
  * <p>
  * This can be effective in problems when you need to search for the shortest path in the same
  * graph multiple times.

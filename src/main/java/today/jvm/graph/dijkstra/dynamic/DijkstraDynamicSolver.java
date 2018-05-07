@@ -21,11 +21,11 @@ import today.jvm.graph.core.*;
  */
 public class DijkstraDynamicSolver {
 	private Graph graph;
-	private int[][] minDistance;
+	private DijkstraDynamicStrategy solverStrategy = new DijkstraDynamicDistanceStrategy();
 
 	public DijkstraDynamicSolver(Graph graph) {
 		this.graph = graph;
-		resetSolverCache();
+		this.solverStrategy.reset(graph);
 	}
 
 	/**
@@ -38,7 +38,7 @@ public class DijkstraDynamicSolver {
 	 */
 	public Path findShortestPath(Node source, Node target) {
 		if (graph.isDirty()) {
-			resetSolverCache();
+			solverStrategy.reset(graph);
 		}
 
 		graph.getNodes().forEach(n -> {
@@ -55,18 +55,15 @@ public class DijkstraDynamicSolver {
 			Node node = priorityQueue.poll();
 
 			if (node != source) {
-				minDistance[source.getSeq()][node.getSeq()] = node.getDistance();
+				solverStrategy.updateMinDistance(source, node);
 			}
 			if (node == target) {
 				finalElement = node;
 				break;
 			}
 
-			if (minDistance[node.getSeq()][target.getSeq()] != 0) {
-				// 'cache hit' between current node & target
-				finalElement = new PathFragment(node, target, minDistance[node.getSeq()][target.getSeq()]);
-				break;
-			}
+			if ((finalElement = solverStrategy.getPathElement(node, target)) != null) break;
+
 			for (Edge edge : node.getEdges()) {
 				Node nextNode = edge.getTarget();
 				int newDist = node.getDistance() + edge.getWeight();
@@ -84,39 +81,15 @@ public class DijkstraDynamicSolver {
 
 		Path path = null;
 		if (finalElement instanceof Node) {
-			updateMinDistance(source, target);
+			solverStrategy.updateMinDistance(source, target);
 			path = buildPath(target);
 		} else if (finalElement instanceof PathFragment){
-			updateMinDistance(source, ((PathFragment) finalElement).getSource());
+			solverStrategy.updateMinDistance(source, ((PathFragment) finalElement).getSource());
 			path = buildPath(((PathFragment) finalElement).getSource());
 			path.getPathElements().add(finalElement);
 		}
 
 		return path;
-	}
-
-	/**
-	 * Reset all cached results.
-	 */
-	public void resetSolverCache() {
-		graph.buildNodeRefs();
-		graph.resetDirty();
-		if (minDistance == null || minDistance.length != graph.getNodeCount()) {
-			minDistance = new int[graph.getNodeCount()][graph.getNodeCount()];
-		} else {
-			// avoid new memory allocation if the size is the same
-			for (int[] minDistanceLine : minDistance) {
-				Arrays.fill(minDistanceLine, 0);
-			}
-		}
-	}
-
-	protected void updateMinDistance(Node sourceNode, Node targetNode) {
-		// TODO: intermediate results
-		do {
-			minDistance[sourceNode.getSeq()][targetNode.getSeq()] = targetNode.getDistance();
-			targetNode = targetNode.getPrevious();
-		} while (targetNode != null);
 	}
 
 	protected Path buildPath(Node targetNode) {
@@ -132,25 +105,7 @@ public class DijkstraDynamicSolver {
 		return path;
 	}
 
-	public void printMinDistances() {
-		final String PAD = "%4s";
-		System.out.printf(PAD, "");
-		for (int i = 0; i < graph.getNodeCount(); i++) {
-			System.out.printf(PAD, graph.getNode(i).getName());
-		}
-		System.out.println();
-		System.out.printf(PAD, "");
-		for (int i = 0; i < graph.getNodeCount(); i++) {
-			System.out.printf(PAD, "----");
-		}
-		System.out.println();
-		for (int r = 0; r < minDistance.length; r++) {
-			System.out.printf(PAD, graph.getNode(r).getName() + "|");
-			for (int d : minDistance[r]) {
-				System.out.printf(PAD, d);
-			}
-
-			System.out.println();
-		}
+	public void printCache() {
+		solverStrategy.printCache();
 	}
 }

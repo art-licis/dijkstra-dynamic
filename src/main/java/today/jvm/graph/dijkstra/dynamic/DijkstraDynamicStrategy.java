@@ -28,4 +28,9 @@ public interface DijkstraDynamicStrategy {
      * @return {@link PathElement} if this path was cached; null in case of cache miss
      */
     PathElement getPathElement(Node sourceNode, Node targetNode);
+
+    /**
+     * Utility method to print cache.
+     */
+    void printCache();
 }

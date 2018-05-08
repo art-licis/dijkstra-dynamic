@@ -108,4 +108,8 @@ public class DijkstraDynamicSolver {
 	public void printCache() {
 		solverStrategy.printCache();
 	}
+
+	public int getCachedDistance(Node sourceNode, Node targetNode) {
+		return solverStrategy.getCachedDistance(sourceNode, targetNode);
+	}
 }

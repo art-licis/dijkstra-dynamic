@@ -69,7 +69,7 @@ public class Node implements PathElement {
 	@Override
 	public String toString() {
 		StringBuilder str = new StringBuilder("Node[");
-		str.append(name).append("|").append(distance);
+		str.append(name).append("/").append(distance).append("/ ");
 		getEdges().forEach(e -> str.append(" ->").append(e.getTarget().getName()));
 		str.append("]");
 		return str.toString();

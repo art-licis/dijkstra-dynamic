@@ -30,6 +30,13 @@ public interface DijkstraDynamicStrategy {
     PathElement getPathElement(Node sourceNode, Node targetNode);
 
     /**
+     * Returns cached distance between the provided source & target nodes.
+     *
+     * @return non-negative distance between the provided nodes; -1 if the distance is not cached
+     */
+    int getCachedDistance(Node sourceNode, Node targetNode);
+
+    /**
      * Utility method to print cache.
      */
     void printCache();

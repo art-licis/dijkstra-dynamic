@@ -12,7 +12,7 @@ import today.jvm.graph.core.PathFragment;
  */
 public class DijkstraDynamicSolverTest {
 	@Test
-	public void validShortestPathTest() {
+	public void testValidShortestPath() {
 		Graph g = new Graph("Sample-1");
 		Node n1 = g.addNode(new Node("1"));
 		Node n2 = g.addNode(new Node("2"));
@@ -45,6 +45,29 @@ public class DijkstraDynamicSolverTest {
 		Path shortestPathN1N5 = solver.findShortestPath(n1, n5);
 		assertEquals(n1, shortestPathN1N5.getPathElements().get(0));
 		assertEquals(true, shortestPathN1N5.getPathElements().get(1) instanceof PathFragment);
+
+		solver.printCache();
+	}
+
+	@Test
+	public void testLinearGraph() {
+		Graph g = new Graph("Sample-1");
+		Node n1 = g.addNode(new Node("1"));
+		Node n2 = g.addNode(new Node("2"));
+		Node n3 = g.addNode(new Node("3"));
+		Node n4 = g.addNode(new Node("4"));
+		Node n5 = g.addNode(new Node("5"));
+
+		g.createBidirectionalEdge(n1, n2, 5);
+		g.createBidirectionalEdge(n2, n3, 6);
+		g.createBidirectionalEdge(n3, n4, 7);
+		g.createBidirectionalEdge(n4, n5, 8);
+
+		DijkstraDynamicSolver solver = new DijkstraDynamicSolver(g);
+		Path firstPath = solver.findShortestPath(n1, n5);
+		assertEquals(5, firstPath.getPathElements().size());
+
+		assertEquals(13, solver.getCachedDistance(n2, n4));
 
 		solver.printCache();
 	}

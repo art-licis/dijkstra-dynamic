@@ -21,29 +21,41 @@ public class DijkstraDynamicDistanceStrategy implements DijkstraDynamicStrategy 
         this.graph = graph;
         graph.buildNodeRefs();
         graph.resetDirty();
+
+        // TODO: consider using larger arrays and saving length property;
+        // smaller size shouldn't result in re-creation
         if (minDistance == null || minDistance.length != graph.getNodeCount()) {
             minDistance = new int[graph.getNodeCount()][graph.getNodeCount()];
         } else {
             // avoid new memory allocation if the size is the same
-            for (int[] minDistanceLine : minDistance) {
-                Arrays.fill(minDistanceLine, 0);
-            }
+            Arrays.stream(minDistance).forEach(a -> Arrays.fill(a, 0));
         }
     }
 
     @Override
     public void updateMinDistance(Node sourceNode, Node targetNode) {
+        int targetDistance = targetNode.getDistance();
+        Node midNode = targetNode;
         do {
-            // TODO: stop if already cached
-            minDistance[sourceNode.getSeq()][targetNode.getSeq()] = targetNode.getDistance();
-            targetNode = targetNode.getPrevious();
-        } while (targetNode != null);
+            minDistance[sourceNode.getSeq()][midNode.getSeq()] = midNode.getDistance();
+            if (midNode != targetNode) minDistance[midNode.getSeq()][targetNode.getSeq()] = targetDistance - midNode.getDistance();
+            midNode = midNode.getPrevious();
+        } while (midNode != null);
     }
 
     @Override
     public PathElement getPathElement(Node sourceNode, Node targetNode) {
         if (minDistance[sourceNode.getSeq()][targetNode.getSeq()] == 0) return null;
         else return new PathFragment(sourceNode, targetNode, minDistance[sourceNode.getSeq()][targetNode.getSeq()]);
+    }
+
+
+    @Override
+    public int getCachedDistance(Node sourceNode, Node targetNode) {
+        if (sourceNode.getSeq() == targetNode.getSeq()) return 0;
+        int cachedDistance = minDistance[sourceNode.getSeq()][targetNode.getSeq()];
+        // TODO: consider setting -1 during array initialization for all cells except row==col
+        return (cachedDistance == 0 ? -1 : cachedDistance);
     }
 
     @Override

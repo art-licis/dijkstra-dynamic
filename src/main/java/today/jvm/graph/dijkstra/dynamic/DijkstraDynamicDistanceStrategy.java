@@ -22,12 +22,10 @@ public class DijkstraDynamicDistanceStrategy implements DijkstraDynamicStrategy 
         graph.buildNodeRefs();
         graph.resetDirty();
 
-        // TODO: consider using larger arrays and saving length property;
-        // smaller size shouldn't result in re-creation
-        if (minDistance == null || minDistance.length != graph.getNodeCount()) {
+        if (minDistance == null || minDistance.length < graph.getNodeCount()) {
             minDistance = new int[graph.getNodeCount()][graph.getNodeCount()];
         } else {
-            // avoid new memory allocation if the size is the same
+            // avoid new memory allocation if nr. of nodes same or smaller
             Arrays.stream(minDistance).forEach(a -> Arrays.fill(a, 0));
         }
     }
